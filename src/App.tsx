@@ -1,83 +1,86 @@
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown, Check } from 'lucide-react';
 
-const NAV_LINKS = [
-  { label: 'Membership', href: '#membership' },
+const FACILITY_LINKS = [
   { label: 'Bar', href: '#bar' },
   { label: 'Spa', href: '#spa' },
   { label: 'Locker Rooms', href: '#locker-rooms' },
   { label: 'Climate', href: '#climate' },
   { label: 'Training Floor', href: '#training-floor' },
   { label: 'Trainers', href: '#trainers' },
-  { label: 'Location', href: '#location' },
 ];
 
 const MEMBERSHIP_TIERS = [
   {
     name: 'Floor',
-    price: '[PRICE]',
+    price: '12,000',
     period: 'per month',
-    accentWidth: 'w-12',
+    blurb: 'Full access to the training floor and all standard amenities.',
     features: [
       'Full access to the 12,000 sq ft training floor',
       'Free weights, machines, and functional zone',
       'Locker and towel service',
       'Access hours: 6:00 AM – 11:00 PM daily',
     ],
+    featured: false,
   },
   {
     name: 'Floor + Spa',
-    price: '[PRICE]',
+    price: '18,000',
     period: 'per month',
-    accentWidth: 'w-20',
+    blurb: 'Everything in Floor, plus the full spa and recovery wing.',
     features: [
       'Everything in Floor',
       'Sauna, steam room, and cold plunge',
       'Two massage therapy sessions per month',
       'Spa access during all opening hours',
     ],
+    featured: false,
   },
   {
     name: 'Floor + Spa + Bar',
-    price: '[PRICE]',
+    price: '24,000',
     period: 'per month',
-    accentWidth: 'w-28',
+    blurb: 'The complete FORT experience — floor, spa, and lounge.',
     features: [
       'Everything in Floor + Spa',
       'Unlimited coffee and protein bar access',
       'Reserved lounge seating',
       'Post-workout meal credit: PKR 4,000 monthly',
     ],
+    featured: true,
   },
   {
     name: 'Off-Peak',
-    price: '[PRICE]',
+    price: '9,000',
     period: 'per month',
-    accentWidth: 'w-36',
+    blurb: 'Same floor and spa access, restricted to quieter hours.',
     features: [
       'Training floor + spa access',
       'Entry restricted to 6:00–10:00 AM and 2:00–5:00 PM',
       'Ideal for flexible-schedule professionals',
       'All locker and towel services included',
     ],
+    featured: false,
   },
   {
     name: 'Couples',
-    price: '[PRICE]',
+    price: '38,000',
     period: 'per month for two',
-    accentWidth: 'w-44',
+    blurb: 'Two memberships under one account, one billing cycle.',
     features: [
       'Two memberships under one account',
       'Full floor, spa, and bar access for both',
       'Shared locker assignment',
       'One combined billing cycle',
     ],
+    featured: false,
   },
   {
     name: 'Concierge',
-    price: '[PRICE]',
+    price: '45,000',
     period: 'per month',
-    accentWidth: 'w-52',
+    blurb: 'The highest tier — priority access, unlimited spa, 24-hour entry.',
     features: [
       'Priority locker in the private wing',
       'Four personal training sessions monthly',
@@ -85,6 +88,7 @@ const MEMBERSHIP_TIERS = [
       'PKR 12,000 monthly bar credit',
       '24-hour facility access with keycard',
     ],
+    featured: false,
   },
 ];
 
@@ -118,6 +122,7 @@ const TRAINERS = [
 function Nav() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [facilityOpen, setFacilityOpen] = useState(false);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40);
@@ -136,21 +141,54 @@ function Nav() {
         <a href="#top" className="font-display font-bold text-xl tracking-tightest text-marble">
           FORT
         </a>
-        <div className="hidden lg:flex items-center gap-7">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm font-body font-medium text-marble/80 hover:text-marble transition-colors"
+        <div className="hidden lg:flex items-center gap-8">
+          <a
+            href="#membership"
+            className="text-sm font-body font-medium text-marble/80 hover:text-marble transition-colors"
+          >
+            Membership
+          </a>
+          <div
+            className="relative"
+            onMouseEnter={() => setFacilityOpen(true)}
+            onMouseLeave={() => setFacilityOpen(false)}
+          >
+            <button
+              className="flex items-center gap-1 text-sm font-body font-medium text-marble/80 hover:text-marble transition-colors"
             >
-              {link.label}
-            </a>
-          ))}
+              Facility
+              <ChevronDown
+                size={15}
+                className={`transition-transform duration-200 ${facilityOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+            {facilityOpen && (
+              <div className="absolute top-full left-0 pt-2 w-48">
+                <div className="bg-ink/95 backdrop-blur-sm border border-steel/30 py-2">
+                  {FACILITY_LINKS.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      className="block px-4 py-2 text-sm font-body font-medium text-marble/80 hover:text-marble hover:bg-steel/10 transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          <a
+            href="#location"
+            className="text-sm font-body font-medium text-marble/80 hover:text-marble transition-colors"
+          >
+            Location
+          </a>
           <a
             href="#membership"
             className="text-sm font-body font-semibold text-marble bg-sandstone px-5 py-2.5 hover:bg-sandstone/90 transition-colors"
           >
-            Book a Facility Walkthrough
+            Book a Walkthrough
           </a>
         </div>
         <button
@@ -163,23 +201,40 @@ function Nav() {
       </div>
       {open && (
         <div className="lg:hidden bg-ink border-t border-steel/30">
-          <div className="flex flex-col px-6 py-4 gap-3">
-            {NAV_LINKS.map((link) => (
+          <div className="flex flex-col px-6 py-4 gap-1">
+            <a
+              href="#membership"
+              onClick={() => setOpen(false)}
+              className="text-sm font-body font-medium text-marble/80 hover:text-marble py-2"
+            >
+              Membership
+            </a>
+            <p className="text-xs font-body font-semibold uppercase tracking-wide text-brass/70 mt-3 mb-1">
+              Facility
+            </p>
+            {FACILITY_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="text-sm font-body font-medium text-marble/80 hover:text-marble py-1"
+                className="text-sm font-body font-medium text-marble/80 hover:text-marble py-2 pl-3"
               >
                 {link.label}
               </a>
             ))}
             <a
+              href="#location"
+              onClick={() => setOpen(false)}
+              className="text-sm font-body font-medium text-marble/80 hover:text-marble py-2 mt-3"
+            >
+              Location
+            </a>
+            <a
               href="#membership"
               onClick={() => setOpen(false)}
-              className="text-sm font-body font-semibold text-marble bg-sandstone px-5 py-2.5 text-center mt-2"
+              className="text-sm font-body font-semibold text-marble bg-sandstone px-5 py-2.5 text-center mt-3"
             >
-              Book a Facility Walkthrough
+              Book a Walkthrough
             </a>
           </div>
         </div>
@@ -231,43 +286,90 @@ function Membership() {
             Pick the one that matches how you want to use the building.
           </p>
         </div>
-        <div className="flex flex-col gap-0">
-          {MEMBERSHIP_TIERS.map((tier, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {MEMBERSHIP_TIERS.map((tier) => (
             <div
               key={tier.name}
-              className={`grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 py-8 lg:py-10 border-t border-steel/20 ${
-                i === MEMBERSHIP_TIERS.length - 1 ? 'border-b' : ''
+              className={`relative flex flex-col p-7 lg:p-8 transition-all duration-300 hover:-translate-y-1 ${
+                tier.featured
+                  ? 'bg-ink text-marble border border-brass/40 shadow-xl'
+                  : 'bg-white/40 text-deepink border border-steel/15 hover:border-sandstone/40 hover:shadow-lg'
               }`}
             >
-              <div className="lg:col-span-3 flex flex-col">
-                <div className={`h-1 ${tier.accentWidth} bg-sandstone mb-4`} />
-                <h3 className="font-display font-semibold text-deepink text-2xl lg:text-3xl tracking-tighter">
-                  {tier.name}
-                </h3>
-                <p className="font-body text-steel text-sm mt-2">
-                  {tier.price} {tier.period}
-                </p>
-              </div>
-              <div className="lg:col-span-7">
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
-                  {tier.features.map((f) => (
-                    <li key={f} className="font-body text-deepink text-sm lg:text-base leading-relaxed">
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="lg:col-span-2 flex lg:justify-end items-start">
-                <a
-                  href="#location"
-                  className="font-body font-semibold text-sandstone text-sm border border-sandstone px-4 py-2.5 hover:bg-sandstone hover:text-marble transition-colors inline-block"
+              {tier.featured && (
+                <div className="absolute -top-3 left-7 bg-sandstone text-marble text-xs font-body font-semibold px-3 py-1 uppercase tracking-wide">
+                  Most Popular
+                </div>
+              )}
+              <div className={`h-1 w-12 bg-sandstone mb-5`} />
+              <h3 className="font-display font-semibold text-2xl lg:text-3xl tracking-tighter">
+                {tier.name}
+              </h3>
+              <p
+                className={`font-body text-sm mt-2 leading-relaxed ${
+                  tier.featured ? 'text-marble/60' : 'text-steel'
+                }`}
+              >
+                {tier.blurb}
+              </p>
+              <div className="flex items-baseline gap-1.5 mt-5">
+                <span
+                  className={`font-display font-bold text-2xl ${
+                    tier.featured ? 'text-brass' : 'text-sandstone'
+                  }`}
                 >
-                  Reserve this tier
-                </a>
+                  PKR
+                </span>
+                <span className="font-display font-bold text-4xl lg:text-5xl tracking-tighter">
+                  {tier.price}
+                </span>
               </div>
+              <p
+                className={`font-body text-xs mt-1 ${
+                  tier.featured ? 'text-marble/50' : 'text-steel/70'
+                }`}
+              >
+                {tier.period}
+              </p>
+              <div
+                className={`my-6 h-px ${
+                  tier.featured ? 'bg-marble/15' : 'bg-steel/15'
+                }`}
+              />
+              <ul className="flex flex-col gap-3 flex-1">
+                {tier.features.map((f) => (
+                  <li
+                    key={f}
+                    className={`flex items-start gap-2.5 text-sm font-body leading-relaxed ${
+                      tier.featured ? 'text-marble/85' : 'text-deepink'
+                    }`}
+                  >
+                    <Check
+                      size={16}
+                      className={`shrink-0 mt-0.5 ${
+                        tier.featured ? 'text-brass' : 'text-sandstone'
+                      }`}
+                    />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="#location"
+                className={`mt-7 font-body font-semibold text-sm px-5 py-3 text-center transition-colors ${
+                  tier.featured
+                    ? 'bg-sandstone text-marble hover:bg-sandstone/90'
+                    : 'border border-sandstone text-sandstone hover:bg-sandstone hover:text-marble'
+                }`}
+              >
+                Reserve this tier
+              </a>
             </div>
           ))}
         </div>
+        <p className="font-body text-steel text-sm mt-10 text-center">
+          All prices in Pakistani Rupees. Annual plans receive two months free.
+        </p>
       </div>
     </section>
   );
